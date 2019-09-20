@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.item_nota.view.*
 
 class NotaAdapter(
     private val notas: List<Nota>,
-    private val callback:(Nota) -> Unit,
+    private val callback:(Nota, Int) -> Unit,
     private val callbackLong:(Nota, Int) -> Unit
 ) : RecyclerView.Adapter<NotaAdapter.VH>() {
 
@@ -26,7 +26,7 @@ class NotaAdapter(
 
         vh.itemView.setOnClickListener {
             val nota = notas[vh.adapterPosition]
-            callback(nota)
+            callback(nota, vh.adapterPosition)
         }
 
         vh.itemView.setOnLongClickListener {
