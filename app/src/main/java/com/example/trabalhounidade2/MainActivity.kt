@@ -35,21 +35,15 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if(id == R.id.action_add){
-            openDialog()
+            //openDialog()
+            var newIntent = Intent(this, NotaActivity::class.java)
+            startActivity(newIntent)
             return true
         } else {
             return super.onOptionsItemSelected(item)
         }
     }
 
-
-    fun openDialog(){
-        DialogNota.show(supportFragmentManager, object : DialogNota.OnTextListener {
-            override fun onSetText(text: String) {
-                addNota(text)
-            }
-        })
-    }
 
     fun onNotaItemClick(nota: Nota, position: Int){
         val s = "${nota.texto}"

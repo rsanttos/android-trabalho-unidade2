@@ -16,26 +16,51 @@ class NotaActivity : AppCompatActivity() {
         var titulo = intent.getStringExtra("NOTA_TITULO")
         var texto = intent.getStringExtra("NOTA_TEXTO")
 
-        tvTitulo.text = titulo
+        if(isUpdate(position, titulo)){
 
-        edtTexto.setText(texto)
+            tvTitulo.text = titulo
 
-        btnAtualizar.setOnClickListener{
-            var textoNovo = edtTexto.text.toString()
+            edtTexto.setText(texto)
 
-            var newIntent = Intent(this, MainActivity::class.java)
+            btnCadastrar.setOnClickListener{
+                var textoNovo = edtTexto.text.toString()
 
-            newIntent.putExtra("VALOR_POSITION", position)
-            newIntent.putExtra("VALOR_TITULO", titulo)
-            newIntent.putExtra("VALOR_TEXTO", textoNovo)
+                var newIntent = Intent(this, MainActivity::class.java)
 
-            Log.v("atv2-v-position", position)
-            Log.v("atv2-v-titulo", titulo)
-            Log.v("atv2-v-texto", textoNovo)
+                newIntent.putExtra("VALOR_POSITION", position)
+                newIntent.putExtra("VALOR_TITULO", titulo)
+                newIntent.putExtra("VALOR_TEXTO", textoNovo)
 
-            setResult(1, newIntent)
-            finish()
+                Log.v("atv2-v-position", position)
+                Log.v("atv2-v-titulo", titulo)
+                Log.v("atv2-v-texto", textoNovo)
+
+                setResult(1, newIntent)
+                finish()
+            }
+        } else {
+            tvTitulo.text = "Nova nota"
+
+            btnCadastrar.setOnClickListener{
+                DialogNota.show(supportFragmentManager, object : DialogNota.OnTextListener {
+                    override fun onSetText(text: String) {
+
+                    }
+                })
+            }
         }
 
+
+        btnCancelar.setOnClickListener {
+            finish()
+        }
+    }
+
+    fun isUpdate(position: String, titulo: String): Boolean{
+        return (position.isNullOrBlank() && titulo.isNullOrBlank())
+    }
+
+
+    fun openDialog(){
     }
 }

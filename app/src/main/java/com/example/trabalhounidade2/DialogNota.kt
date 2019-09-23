@@ -26,7 +26,7 @@ class DialogNota : DialogFragment() {
         builder.setNegativeButton("Cancelar") { dialogInterface, i -> dismiss() }
 
         val view = activity!!.layoutInflater.inflate(R.layout.dialog_nota, null)
-        editText = view.findViewById(R.id.edt_texto)
+        editText = view.findViewById(R.id.edt_titulo)
         builder.setView(view)
         return builder.create()
     }
