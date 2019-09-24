@@ -35,9 +35,8 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if(id == R.id.action_add){
-            //openDialog()
             var newIntent = Intent(this, NotaActivity::class.java)
-            startActivity(newIntent)
+            startActivityForResult(newIntent, 1)
             return true
         } else {
             return super.onOptionsItemSelected(item)
@@ -59,21 +58,29 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         Log.v("atv2-v", resultCode.toString())
-        Log.v("atv2-v", data?.extras.toString())
 
+        Log.v("atv2-v", data?.hasExtra("NOTA_TEXTO").toString())
 
-        var position = data?.getStringExtra("VALOR_POSITION")
-        var texto = data?.getStringExtra("VALOR_TEXTO")
-        var titulo = data?.getStringExtra("VALOR_TITULO")
+        var position = data?.getStringExtra("NOTA_POSITION")
+        var titulo = data?.getStringExtra("NOTA_TITULO")
+        var texto = data?.getStringExtra("NOTA_TEXTO")
+
+        var intPos : Int;
+
+        val nota : Nota
 
         if(position != null && titulo != null && texto != null){
             Log.v("atv2-v-position", position)
-            Log.v("atv2-v-titulo", titulo)
-            Log.v("atv2-v-texto", texto)
-            var intPos = Integer.parseInt(position)
-            val nota = Nota(titulo, texto)
+            intPos = Integer.parseInt(position)
+            nota = Nota(titulo, texto)
             notas[intPos] = nota
             adapter.notifyItemChanged(intPos)
+        } else if(titulo != null && texto != null){
+            Log.v("atv2-v-titulo", titulo)
+            Log.v("atv2-v-texto", texto)
+            nota = Nota(titulo, texto)
+            notas.add(nota)
+            adapter.notifyItemInserted(notas.lastIndex)
         }
 
     }
@@ -86,43 +93,10 @@ class MainActivity : AppCompatActivity() {
         adapter.notifyItemRemoved(position)
     }
 
-    fun initSwipeDelete(){
-        val swipe = object : ItemTouchHelper.SimpleCallback(
-            0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-        ){
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean = false
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                notas.removeAt(position)
-                adapter.notifyItemRemoved(position)
-            }
-
-        }
-
-        val itemTouchHelper = ItemTouchHelper(swipe)
-        itemTouchHelper.attachToRecyclerView(rvNotas)
-    }
-
     fun initRecyclerView(){
         rvNotas.adapter = adapter
-
         val layoutMAnager = GridLayoutManager(this, 1)
-
         rvNotas.layoutManager = layoutMAnager
-
-        initSwipeDelete()
-    }
-
-    fun addNota(texto: String){
-        val titulo = "Nota ${notas.size + 1}"
-        val nota = Nota(titulo, texto)
-        notas.add(nota)
-        adapter.notifyItemInserted(notas.lastIndex)
     }
 
 }

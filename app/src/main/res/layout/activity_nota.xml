@@ -16,13 +16,13 @@
         android:text="TextView" />
 
     <EditText
-        android:id="@+id/edtTexto"
+        android:id="@+id/edtTextoNota"
         android:layout_width="match_parent"
         android:layout_height="420dp"
         android:gravity="top"
         android:inputType="textMultiLine"
         android:lines="15"
-        android:text="Name"
+        android:text=""
         android:textSize="25dp" />
 
     <LinearLayout
