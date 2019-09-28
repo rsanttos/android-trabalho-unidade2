@@ -42,8 +42,8 @@ class NotaAdapter(
     }
 
     override fun onBindViewHolder(holder: NotaAdapter.VH, position: Int) {
-        val (texto) = notas[position]
-        holder.txtNota.text = texto
+        val titulo = notas[position].titulo
+        holder.txtNota.text = titulo
     }
 
     class  VH(itemView: View): RecyclerView.ViewHolder(itemView){

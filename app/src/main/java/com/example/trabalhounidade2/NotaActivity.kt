@@ -13,10 +13,11 @@ class NotaActivity : AppCompatActivity() {
         setContentView(R.layout.activity_nota)
 
         var positionNota = intent.getStringExtra("NOTA_POSITION")
+        var idNota = intent.getStringExtra("NOTA_ID")
         var tituloNota = intent.getStringExtra("NOTA_TITULO")
         var textoNota = intent.getStringExtra("NOTA_TEXTO")
 
-        if(!(positionNota.isNullOrBlank() && tituloNota.isNullOrBlank())){
+        if(!(positionNota.isNullOrBlank() && idNota.isNullOrBlank() && tituloNota.isNullOrBlank())){
 
             tvTitulo.text = tituloNota
             edtTextoNota.setText(textoNota)
@@ -27,10 +28,12 @@ class NotaActivity : AppCompatActivity() {
                 var newIntent = Intent(this, MainActivity::class.java)
 
                 newIntent.putExtra("NOTA_POSITION", positionNota)
+                newIntent.putExtra("NOTA_ID", idNota)
                 newIntent.putExtra("NOTA_TITULO", tituloNota)
                 newIntent.putExtra("NOTA_TEXTO", textoNovo)
 
                 Log.v("atv2-v-position", positionNota)
+                Log.v("atv2-v-id", idNota)
                 Log.v("atv2-v-titulo", tituloNota)
                 Log.v("atv2-v-texto", textoNovo)
 

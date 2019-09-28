@@ -19,10 +19,13 @@ class MainActivity : AppCompatActivity() {
 
     val notas = mutableListOf<Nota>()
     private var adapter = NotaAdapter(notas, this::onNotaItemClick, this::onNotaItemLongClick)
+    val notaRepository = SQLiteRepository(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        notas.addAll(notaRepository.findAll())
 
         initRecyclerView()
     }
@@ -45,10 +48,9 @@ class MainActivity : AppCompatActivity() {
 
 
     fun onNotaItemClick(nota: Nota, position: Int){
-        val s = "${nota.texto}"
-        Toast.makeText(this, s, Toast.LENGTH_SHORT).show()
         var newIntent = Intent(this, NotaActivity::class.java)
         newIntent.putExtra("NOTA_POSITION", position.toString())
+        newIntent.putExtra("NOTA_ID", nota.id.toString())
         newIntent.putExtra("NOTA_TITULO", nota.titulo)
         newIntent.putExtra("NOTA_TEXTO", nota.texto)
         startActivityForResult(newIntent, 1)
@@ -59,38 +61,41 @@ class MainActivity : AppCompatActivity() {
 
         Log.v("atv2-v", resultCode.toString())
 
-        Log.v("atv2-v", data?.hasExtra("NOTA_TEXTO").toString())
-
         var position = data?.getStringExtra("NOTA_POSITION")
+        var id = data?.getStringExtra("NOTA_ID")
         var titulo = data?.getStringExtra("NOTA_TITULO")
         var texto = data?.getStringExtra("NOTA_TEXTO")
 
         var intPos : Int;
+        var idLong : Long;
 
-        val nota : Nota
+        val nota : Nota = Nota(0)
 
-        if(position != null && titulo != null && texto != null){
-            Log.v("atv2-v-position", position)
+        if(position != null && id != null && titulo != null && texto != null){
             intPos = Integer.parseInt(position)
-            nota = Nota(titulo, texto)
+            idLong = Integer.parseInt(id).toLong()
+            nota.id = idLong
+            nota.titulo = titulo
+            nota.texto = texto
             notas[intPos] = nota
             adapter.notifyItemChanged(intPos)
         } else if(titulo != null && texto != null){
-            Log.v("atv2-v-titulo", titulo)
-            Log.v("atv2-v-texto", texto)
-            nota = Nota(titulo, texto)
+            nota.titulo = titulo
+            nota.texto = texto
             notas.add(nota)
             adapter.notifyItemInserted(notas.lastIndex)
         }
 
+        notaRepository.save(nota)
+
+        Log.v("atv2 - notas - ", notaRepository.findAll().toString())
     }
 
 
     fun onNotaItemLongClick(nota: Nota, position: Int){
-        val s = "Long Click - ${nota.texto}"
-        Toast.makeText(this, s, Toast.LENGTH_SHORT).show()
         notas.remove(nota)
         adapter.notifyItemRemoved(position)
+        notaRepository.remove(nota)
     }
 
     fun initRecyclerView(){
